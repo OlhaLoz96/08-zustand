@@ -8,13 +8,35 @@ import NotesClient from "./Notes.client";
 import { Metadata } from "next";
 import { NoteTag } from "@/types/note";
 
-export const metadata: Metadata = {
-  title: "Notes",
-};
-
 type NotesProps = {
   params: Promise<{ slug: [NoteTag | "all"] }>;
 };
+
+export async function generateMetadata({
+  params,
+}: NotesProps): Promise<Metadata> {
+  const { slug } = await params;
+  const category = slug[0];
+  const categoryName = category.charAt(0).toUpperCase() + category.slice(1);
+
+  return {
+    title: `${categoryName} Notes`,
+    description: `Here you can view ${categoryName} notes`,
+    openGraph: {
+      title: `${categoryName} Notes`,
+      description: `Here you can view ${categoryName} notes`,
+      url: "",
+      images: [
+        {
+          url: "https://ac.goit.global/fullstack/react/notehub-og-meta.jpg",
+          width: 1200,
+          height: 630,
+          alt: `${categoryName} Notes`,
+        },
+      ],
+    },
+  };
+}
 
 async function Notes({ params }: NotesProps) {
   const { slug } = await params;
